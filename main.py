@@ -3,6 +3,24 @@ import math
 
 rooms = []
 
+def display_rooms():
+    for room in rooms:
+        print("Room number:", room["number"])
+        print("Room Type:", room["type"])
+        print("Price per Night:", room["price"])
+        if room["allocated"]:
+            print("Status: Occupied")
+        else:
+            print("Status: Available")
+
+def delete_room():
+    room_number = input("Enter room number to delete: ")
+    for room in rooms:
+        if room["number"] == room_number:
+            rooms.remove(room)
+            print("Room deleted successfully.")
+            return
+
 def add_room():
     room_number = input("Enter room number: ")
     
