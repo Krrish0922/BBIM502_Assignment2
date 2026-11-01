@@ -3,8 +3,39 @@ import math
 
 rooms = []
 
+def add_room():
+    room_number = input("Enter room number: ")
+    
+    for room in rooms:
+        if room["number"] == room_number:
+            print("Room already exists.")
+            return
+    
+    room_type = input("Enter room type (Single/Double/Deluxe): ").strip()
+    if (room_type == ""):
+        print("Room type cannot be empty")
+        return
+    
+    price = input("Enter price per night: ")
+    if price <= 0:
+        print("Room price must be a valid number greater than zero.")
+        return
+    
+    room = {
+        "number": room_number,
+        "type": room_type,
+        "price": price,
+        "allocated": False,
+        "customer_id": None,
+        "customer_name": None,
+        "nights": 0
+    }
+    
+    rooms.append(room)
+    print("Room added successfully.")
+
 def show_menu():
-    print("LANGHAM HOTEL MANAGEMENT SYSTEM")
+    print("\nLANGHAM HOTEL MANAGEMENT SYSTEM")
     print("1. Add room")
     print("2. Delete Room")
     print("3. Display Room Details")
@@ -16,4 +47,14 @@ def show_menu():
     print("9. Backup and Clear File")
     print("0. Exit")
     
-show_menu()
+while True:
+    show_menu()
+    choice = input("Enter your choice (0-9): ")
+    
+    if choice == "0":
+        print("Thank you for using the system.")
+        break
+    elif choice == "1":
+        add_room()
+    else:
+        print("Invalid choice. Enter a number from 0 to 9.")
