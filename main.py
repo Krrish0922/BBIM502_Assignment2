@@ -3,6 +3,61 @@ import math
 
 rooms = []
 
+def billing():
+    room_number = int(input("Enter room number for billing: "))
+    
+    for room in rooms:
+        if room["number"] == room_number:
+            total = room["price"] * room["nights"]
+            print("---------- BILL ----------")
+            print("Room Number:", room["number"])
+            print("Customer Name:", room["customer_name"])
+            print("Price per Night: $", room["price"])
+            print("Number of Nights:", room["nights"])
+            print("Total Bill: $", total)
+            print("--------------------------")
+            
+            confirm = input("De-allocate room? (yes/no): ").lower()
+            
+            if confirm == "yes":
+                room["allocated"] = False
+                room["customer_id"] = None
+                room["customer_name"] = None
+                room["nights"] = 0
+                
+                print("Room de-allocated successfully.")
+            elif confirm == "no":
+                print("De-allocation cancelled.")
+            else:
+                print("Incorrect input. De-allocation cancelled.")
+
+def display_allocations():
+    for room in rooms:
+        if room["allocated"]:
+            print("Room Number:", room["number"])
+            print("Customer ID:", room["customer_id"])
+            print("Customer Name:", room["customer_name"])
+            print("Number of Nights:", room["nights"])
+
+def allocate_room():
+    try:
+        room_number = int(input("Enter room number to allocate: "))
+        
+        for room in rooms:
+            if room["number"] == room_number:
+                customer_id = int(input("Enter customer ID: "))
+                customer_name = input("Enter customer name: ").strip()
+                nights = int(input("Enter number of nights: "))
+                
+                room["customer_id"] = customer_id
+                room["customer_name"] = customer_name
+                room["nights"] = nights
+                room["allocated"] = True
+                print("Room allocated successfully.")
+                return
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
 def display_rooms():
     # Check if any rooms are added to the system
     if len(rooms) == 0:
