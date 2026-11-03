@@ -1,7 +1,38 @@
 from datetime import datetime
 import math
 
+filename = "LHMS_850011804.txt"
 rooms = []
+
+def backup_file():
+    with open(filename, "r", encoding = "utf-8") as file:
+        data = file.read()
+    
+    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_name = filename.replace(
+        ".txt", "_Backup_" + current_time + ".txt"
+    )
+    
+    with open(backup_name, "a", encoding="utf-8") as file:
+        file.write(data)
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write("")
+    
+    print("Backup created successfully.")
+
+def read_allocations():
+    with open(filename, "r", encoding="utf-8") as file:
+        data = file.read()
+        print(data)
+
+def save_allocations():
+    with open(filename, "w", encoding="utf-8") as file:
+        for room in rooms:
+            file.write("Room Number: " + str(room["number"]) + "\n")
+            file.write("Customer ID: " + str(room["customer_id"]) + "\n")
+            file.write("Customer Name: " + room["customer_name"] + "\n")
+            file.write("Nights: " + str(room["nights"]) + "\n")
+            file.write("-------------------------\n")
 
 def billing():
     room_number = int(input("Enter room number for billing: "))
