@@ -1,5 +1,9 @@
-from datetime import datetime
-import math
+try:
+    from datetime import datetime
+    import math
+except ImportError:
+    print("Required module or import could not be loaded.")
+    exit()
 
 # Store the hotel room details while the program is running
 filename = "LHMS_850011804.txt"
