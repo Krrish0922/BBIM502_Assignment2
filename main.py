@@ -5,70 +5,96 @@ filename = "LHMS_850011804.txt"
 rooms = []
 
 def backup_file():
-    with open(filename, "r", encoding = "utf-8") as file:
-        data = file.read()
-    
-    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    backup_name = filename.replace(
-        ".txt", "_Backup_" + current_time + ".txt"
-    )
-    
-    with open(backup_name, "a", encoding="utf-8") as file:
-        file.write(data)
-    with open(filename, "w", encoding="utf-8") as file:
-        file.write("")
-    
-    print("Backup created successfully.")
+    try:
+        with open(filename, "r", encoding = "utf-8") as file:
+            data = file.read()
+
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_name = filename.replace(
+            ".txt", "_Backup_" + current_time + ".txt"
+        )
+
+        with open(backup_name, "a", encoding="utf-8") as file:
+            file.write(data)
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write("")
+
+        print("Backup created successfully.")
+        print("Backup File:", backup_name)
+        print("Original file cleared.")
+        
+    except FileNotFoundError:
+        print("File not found. Please save allocations first.")
+    except OSError:
+        print("Error during backup.")
 
 def read_allocations():
-    with open(filename, "r", encoding="utf-8") as file:
-        data = file.read()
-        print(data)
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+            data = file.read()
+            print(data)
+    except FileNotFoundError:
+        print("File not found. Please save allocations first.")
+    except OSError:
+        print("Error while reading the file.")
 
 def save_allocations():
-    with open(filename, "w", encoding="utf-8") as file:
-        for room in rooms:
-            file.write("Room Number: " + str(room["number"]) + "\n")
-            file.write("Customer ID: " + str(room["customer_id"]) + "\n")
-            file.write("Customer Name: " + room["customer_name"] + "\n")
-            file.write("Nights: " + str(room["nights"]) + "\n")
-            file.write("-------------------------\n")
+    try: 
+        with open(filename, "w", encoding="utf-8") as file:
+            for room in rooms:
+                file.write("Room Number: " + str(room["number"]) + "\n")
+                file.write("Customer ID: " + str(room["customer_id"]) + "\n")
+                file.write("Customer Name: " + room["customer_name"] + "\n")
+                file.write("Nights: " + str(room["nights"]) + "\n")
+                file.write("-------------------------\n")
+    except OSError:
+        print("Error while saving the file.")
 
 def billing():
-    room_number = int(input("Enter room number for billing: "))
-    
-    for room in rooms:
-        if room["number"] == room_number:
-            total = room["price"] * room["nights"]
-            print("---------- BILL ----------")
-            print("Room Number:", room["number"])
-            print("Customer Name:", room["customer_name"])
-            print("Price per Night: $", room["price"])
-            print("Number of Nights:", room["nights"])
-            print("Total Bill: $", total)
-            print("--------------------------")
-            
-            confirm = input("De-allocate room? (yes/no): ").lower()
-            
-            if confirm == "yes":
-                room["allocated"] = False
-                room["customer_id"] = None
-                room["customer_name"] = None
-                room["nights"] = 0
+    try:
+        room_number = int(input("Enter room number for billing: "))
+        
+        for room in rooms:
+            if room["number"] == room_number:
+                total = room["price"] * room["nights"]
+                print("---------- BILL ----------")
+                print("Room Number:", room["number"])
+                print("Customer Name:", room["customer_name"])
+                print("Price per Night: $", room["price"])
+                print("Number of Nights:", room["nights"])
+                print("Total Bill: $", total)
+                print("--------------------------")
                 
-                print("Room de-allocated successfully.")
-            elif confirm == "no":
-                print("De-allocation cancelled.")
-            else:
-                print("Incorrect input. De-allocation cancelled.")
+                confirm = input("De-allocate room? (yes/no): ").lower()
+                
+                if confirm == "yes":
+                    room["allocated"] = False
+                    room["customer_id"] = None
+                    room["customer_name"] = None
+                    room["nights"] = 0
+                    
+                    print("Room de-allocated successfully.")
+                elif confirm == "no":
+                    print("De-allocation cancelled.")
+                else:
+                    print("Incorrect input. De-allocation cancelled.")
+    except ValueError:
+        print("Invalid room number.")
+    except EOFError:
+        print("Input was interrupted. Billing was not finished.")
 
 def display_allocations():
+    found = False
     for room in rooms:
         if room["allocated"]:
+            found = True
+            print("-------------------------")
             print("Room Number:", room["number"])
             print("Customer ID:", room["customer_id"])
             print("Customer Name:", room["customer_name"])
             print("Number of Nights:", room["nights"])
+    if not found:
+        print("No rooms are currently allocated.")
 
 def allocate_room():
     try:
@@ -86,6 +112,7 @@ def allocate_room():
                 room["allocated"] = True
                 print("Room allocated successfully.")
                 return
+        print("Room not found.")
     except ValueError:
         print("Invalid input. Please enter a valid number.")
 
